@@ -1,0 +1,75 @@
+// Default password (set this only if there's no stored password yet)
+if (!localStorage.getItem("posPassword")) {
+localStorage.setItem("posPassword", "1234"); // Default password
+}
+
+// Check login state on page load
+window.onload = function () {
+if (localStorage.getItem("isLoggedIn") === "true") {
+    showApp();
+} else {
+    showLogin();
+}
+};
+
+function login() {
+const enteredPassword = document.getElementById("loginPassword").value;
+const storedPassword = localStorage.getItem("posPassword");
+
+if (enteredPassword === storedPassword) {
+    localStorage.setItem("isLoggedIn", "true");
+    showApp();
+} else {
+    document.getElementById("loginMsg").innerText = "Incorrect password.";
+}
+}
+
+function logout() {
+localStorage.removeItem("isLoggedIn");
+showLogin();
+}
+
+function showApp() {
+document.getElementById("login-section").style.display = "none";
+document.querySelector(".header-wrapper").style.display = "block";
+document.querySelector(".content-wrapper").style.display = "block";
+}
+
+function showLogin() {
+document.getElementById("login-section").style.display = "flex"; // assuming it's a flex container
+document.querySelector(".header-wrapper").style.display = "none";
+document.querySelector(".content-wrapper").style.display = "none";
+}
+
+function updatePassword() {
+const inputs = document.querySelectorAll("#changePasswordOverlay input");
+const currentPass = inputs[0].value;
+const newPass = inputs[1].value;
+const confirmPass = inputs[2].value;
+const storedPassword = localStorage.getItem("posPassword");
+
+if (currentPass !== storedPassword) {
+    alert("Current password is incorrect.");
+    return;
+}
+
+if (newPass !== confirmPass) {
+    alert("New passwords do not match.");
+    return;
+}
+
+localStorage.setItem("posPassword", newPass);
+alert("Password successfully updated!");
+closeOverlay('changePasswordOverlay');
+}
+
+function closeOverlay(id) {
+document.getElementById(id).classList.add("hidden");
+}
+
+function showOverlay(id) {
+document.getElementById(id).classList.remove("hidden");
+}
+
+// Attach logout button listener
+document.getElementById("logoutBtn").addEventListener("click", logout);
